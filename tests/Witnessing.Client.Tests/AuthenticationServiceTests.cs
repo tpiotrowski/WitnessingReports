@@ -1,7 +1,5 @@
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using Witnessing.Client;
 
@@ -26,7 +24,7 @@ namespace Tests
         {
             var loginAndPassword = LoginHelper.GetLoginAndPassword();
 
-            using (AuthenticationService authentication = new AuthenticationService(new AuthServiceConfiguration()))
+            using (AuthenticationService authentication = new AuthenticationService(new ServiceConfiguration()))
             {
                 var authenticationResult =
                     await authentication.LoginAsync(loginAndPassword.login, loginAndPassword.password);
@@ -40,24 +38,6 @@ namespace Tests
                     Assert.That(authenticationResult.Client, Is.Not.Null.Or.Empty);
                     Assert.That(authenticationResult.Uid, Is.Not.Null.Or.Empty);
                 });
-            }
-        }
-    }
-
-
-    public class LoginHelper
-    {
-        public static (string login, string password) GetLoginAndPassword()
-        {
-            var path = TestContext.CurrentContext.TestDirectory + @"\login.json";
-
-            using (StreamReader jsonFileReader = new StreamReader(path))
-            {
-                var readToEnd = jsonFileReader.ReadToEnd();
-
-                var deserializeObject = JsonConvert.DeserializeObject<dynamic>(readToEnd);
-
-                return (deserializeObject.Username, deserializeObject.Password);
             }
         }
     }

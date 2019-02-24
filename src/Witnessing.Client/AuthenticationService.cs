@@ -9,12 +9,12 @@ namespace Witnessing.Client
 {
     public class AuthenticationService : RestServiceBase
     {
-        public AuthenticationService(HttpClient httpClient, AuthServiceConfiguration configuration) 
+        public AuthenticationService(HttpClient httpClient, ServiceConfiguration configuration) 
             : base(httpClient, configuration)
         {
         }
 
-        public AuthenticationService(AuthServiceConfiguration configuration) 
+        public AuthenticationService(ServiceConfiguration configuration) 
             : base(configuration)
         {
         }

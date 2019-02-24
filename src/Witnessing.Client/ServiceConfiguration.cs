@@ -1,6 +1,6 @@
 ﻿namespace Witnessing.Client
 {
-    public class AuthServiceConfiguration
+    public class ServiceConfiguration
     {
         public string HostUrl { get; set; } = "https://wielkomiejskie.org";
         public string ApiUrl { get; set; } = "api/v1";
