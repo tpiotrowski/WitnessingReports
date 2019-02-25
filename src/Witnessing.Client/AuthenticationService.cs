@@ -4,10 +4,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Witnessing.Client.DataModel;
+using Witnessing.Client.Model.Contract;
 
 namespace Witnessing.Client
 {
-    public class AuthenticationService : RestServiceBase
+ 
+
+    public class AuthenticationService : RestServiceBase, IAuthenticationService
     {
         public AuthenticationService(HttpClient httpClient, ServiceConfiguration configuration) 
             : base(httpClient, configuration)

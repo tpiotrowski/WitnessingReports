@@ -20,8 +20,8 @@ namespace Witnessing.Client.DataModel
         public string LastName { get; set; }
 
         [JsonProperty("phone", Required = Required.Always)]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long Phone { get; set; }
+        //[JsonConverter(typeof(ParseStringConverter))]
+        public string Phone { get; set; }
 
         [JsonProperty("gender", Required = Required.AllowNull)]
         public object Gender { get; set; }

@@ -6,10 +6,13 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Witnessing.Client.DataModel;
+using Witnessing.Client.Model.Contract;
 
 namespace Witnessing.Client
 {
-    public class WitnessingService : WitnessingRestServiceBase
+   
+
+    public class WitnessingService : WitnessingRestServiceBase, IWitnessingService
     {
         protected string _apiSubstring = String.Empty;
 

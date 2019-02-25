@@ -119,7 +119,7 @@ namespace Tests
                 var lookupDate = new DateTime(DateTime.Now.Year, 3, 13);
 
                 List<DispositionUser> _members = new List<DispositionUser>();
-                var members = await ws.GetDispositionAsync(lookupDate, 265);
+                var members = await ws.GetDispositionAsync(lookupDate, 301);//11:00
                 _members.AddRange(members);
 
 
