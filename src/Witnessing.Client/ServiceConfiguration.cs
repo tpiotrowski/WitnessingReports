@@ -6,5 +6,7 @@
         public string ApiUrl { get; set; } = "api/v1";
         public string BaseUrl => $@"{HostUrl}/{ApiUrl}";
         public string WitnessingId { get; set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
     }
 }

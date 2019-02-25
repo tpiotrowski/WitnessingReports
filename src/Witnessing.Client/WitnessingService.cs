@@ -15,31 +15,26 @@ namespace Witnessing.Client
     public class WitnessingService : WitnessingRestServiceBase, IWitnessingService
     {
         protected string _apiSubstring = String.Empty;
+      
 
-        public WitnessingService(AuthData authData, HttpClient httpClient, ServiceConfiguration configuration)
+        public WitnessingService(IAuthenticationService authData, HttpClient httpClient, ServiceConfiguration configuration)
             : base(authData, httpClient, configuration)
         {
             ServiceName = "witnessings";
         }
 
-        public WitnessingService(AuthData authData, ServiceConfiguration configuration) : base(authData, configuration)
+        public WitnessingService(IAuthenticationService authData, ServiceConfiguration configuration) 
+            : base(authData, configuration)
         {
             ServiceName = "witnessings";
         }
 
-        public async Task<bool> CheckResultIsOk(HttpResponseMessage responseMessage, [CallerMemberName] string callerName = "")
-        {
-            if (responseMessage.IsSuccessStatusCode)
-                return true;
-            if(responseMessage.StatusCode != HttpStatusCode.NotFound)
-                throw new WitnessingServiceException(
-                $"Error in {callerName}: StatusCode: {responseMessage.StatusCode} Message: {await responseMessage.Content.ReadAsStringAsync()}");
-
-            return false;
-        }
+       
 
         public async Task<WitnessingMember[]> GetMembersAsync(int page = 1, int resultCount = 100, string filter = "")
         {
+            await AuthenticateAsync();
+
             var url =
                 $@"{GetBaseUrl()}/members?page={page}&per_page={resultCount}&order=name&direction=asc&search_query={filter}";
 
@@ -61,6 +56,8 @@ namespace Witnessing.Client
 
         public async Task<WitnessingHour[]> GetHoursAsync(int weekDayNumber)
         {
+            await AuthenticateAsync();
+
             var url =
                 $@"{GetBaseUrl()}/days/{weekDayNumber}/hours";
 
@@ -81,6 +78,7 @@ namespace Witnessing.Client
 
         public async Task<SortedList<int,WitnessingHour[]>> GetHoursForWeekAsync()
         {
+            await AuthenticateAsync();
             var weekDays = Enumerable.Range(1, 7);
             SortedList<int, WitnessingHour[]> result = new SortedList<int, WitnessingHour[]>();
             foreach (var weekDay in weekDays)
@@ -97,6 +95,8 @@ namespace Witnessing.Client
 
         public async Task<WitnessingLocation[]> GetLocationsAsync(int page = 1, int resultCount = 100, string filter = "")
         {
+            await AuthenticateAsync();
+
             var url =
                 $@"{GetBaseUrl()}/locations?page={page}&per_page={resultCount}&order=name&direction=asc&search_query={filter}";
 
@@ -119,6 +119,8 @@ namespace Witnessing.Client
 
         public async Task<WitnessingScheduleMember[]> GetScheduleAsync(DateTime date)
         {
+            await AuthenticateAsync();
+
             var url =
                 $@"{GetBaseUrl()}/schedule?date={date:d}";
 
@@ -139,7 +141,7 @@ namespace Witnessing.Client
 
         public async Task<DispositionUser[]> GetDispositionAsync(DateTime date, long hourId)
         {
-
+            await AuthenticateAsync();
             //https://wielkomiejskie.org/api/v1/witnessings/11/schedule/dispositions?date=2019-03-13&hour_id=263&search_query=
             var url =
                 $@"{GetBaseUrl()}/schedule/dispositions?date={date.Year}-{date.Month:D2}-{date.Day:D2}&hour_id={hourId}&search_query=";

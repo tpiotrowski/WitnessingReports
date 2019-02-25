@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using Witnessing.Client;
+using Witnessing.Client.Model.Contract;
 
 namespace Tests
 {
     public class WitnessingServiceTestsBase
     {
-
         private ServiceConfiguration _conf;
-        private AuthData _authData;
+        private IAuthenticationService _authData;
 
         [OneTimeSetUp]
         protected async Task SetupFixture()
@@ -19,22 +19,20 @@ namespace Tests
 
             var serviceConfiguration = new ServiceConfiguration();
             serviceConfiguration.WitnessingId = "11";
+            serviceConfiguration.Login = loginAndPassword.login;
+            serviceConfiguration.Password = loginAndPassword.password;
 
-            using (AuthenticationService authentication = new AuthenticationService(serviceConfiguration))
-            {
-                var authenticationResult =
-                    await authentication.LoginAsync(loginAndPassword.login, loginAndPassword.password);
 
-                _conf = serviceConfiguration;
-                _authData = authenticationResult;
-            }
-
+            AuthenticationService authentication = new AuthenticationService(serviceConfiguration);
+            
+            _conf = serviceConfiguration;
+            _authData = authentication;
         }
 
 
-        public async Task RunTestAsAuthenticated(Func<AuthData, ServiceConfiguration, Task> runTestAction)
+        public async Task RunTestAsAuthenticated(Func<IAuthenticationService, ServiceConfiguration, Task> runTestAction)
         {
-            await runTestAction(_authData, _conf);            
+            await runTestAction(_authData, _conf);
         }
     }
 }
