@@ -10,26 +10,24 @@ using Witnessing.Client.Model.Contract;
 
 namespace Witnessing.Client
 {
-   
-
     public class WitnessingService : WitnessingRestServiceBase, IWitnessingService
     {
         protected string _apiSubstring = String.Empty;
-      
 
-        public WitnessingService(IAuthenticationService authData, HttpClient httpClient, ServiceConfiguration configuration)
+
+        public WitnessingService(IAuthenticationService authData, HttpClient httpClient,
+            ServiceConfiguration configuration)
             : base(authData, httpClient, configuration)
         {
             ServiceName = "witnessings";
         }
 
-        public WitnessingService(IAuthenticationService authData, ServiceConfiguration configuration) 
+        public WitnessingService(IAuthenticationService authData, ServiceConfiguration configuration)
             : base(authData, configuration)
         {
             ServiceName = "witnessings";
         }
 
-       
 
         public async Task<WitnessingMember[]> GetMembersAsync(int page = 1, int resultCount = 100, string filter = "")
         {
@@ -73,27 +71,27 @@ namespace Witnessing.Client
                 return fromJson.WitnessingHours;
             }
 
-            return new WitnessingHour[]{};
+            return new WitnessingHour[] { };
         }
 
-        public async Task<SortedList<int,WitnessingHour[]>> GetHoursForWeekAsync()
+        public async Task<SortedList<int, WitnessingHour[]>> GetHoursForWeekAsync()
         {
             await AuthenticateAsync();
             var weekDays = Enumerable.Range(1, 7);
             SortedList<int, WitnessingHour[]> result = new SortedList<int, WitnessingHour[]>();
+
             foreach (var weekDay in weekDays)
             {
-                
-                    var hoursForWeekDay = await GetHoursAsync(weekDay);
-                    result.Add(weekDay, hoursForWeekDay);
-
+                var hoursForWeekDay = await GetHoursAsync(weekDay);
+                result.Add(weekDay, hoursForWeekDay);
             }
 
             return result;
         }
 
 
-        public async Task<WitnessingLocation[]> GetLocationsAsync(int page = 1, int resultCount = 100, string filter = "")
+        public async Task<WitnessingLocation[]> GetLocationsAsync(int page = 1, int resultCount = 100,
+            string filter = "")
         {
             await AuthenticateAsync();
 
@@ -109,7 +107,7 @@ namespace Witnessing.Client
                 if (responseVal != null)
                 {
                     var fromJson = Locations.FromJson(responseVal);
-                    
+
                     return fromJson.WitnessingLocations;
                 }
             }
@@ -139,6 +137,8 @@ namespace Witnessing.Client
             return null;
         }
 
+
+        private WitnessingMember[] cachedMembers = null;
         public async Task<DispositionUser[]> GetDispositionAsync(DateTime date, long hourId)
         {
             await AuthenticateAsync();
@@ -157,6 +157,33 @@ namespace Witnessing.Client
 
                 var fromJsonUsers = fromJson.Users;
 
+
+                var schedulesForThisDay = await GetScheduleAsync(date);
+
+                var witnessingScheduleMembers = schedulesForThisDay.Where(s => s.HourId == hourId).ToList();
+
+                if (cachedMembers == null)
+                {
+                    cachedMembers = await GetMembersAsync();
+                }
+
+                foreach (var witnessingScheduleMember in witnessingScheduleMembers)
+                {
+                    DispositionUser h = new DispositionUser();
+
+                    var witnessingMember = cachedMembers.Single(m => m.Id == witnessingScheduleMember.UserId);
+
+                    h.Date = witnessingScheduleMember.Date.DateTime;
+                    h.HourId = witnessingScheduleMember.HourId;
+                    h.FirstName = witnessingMember.FirstName;
+                    h.LastName = witnessingMember.LastName;
+                    h.Email = witnessingMember.Email;
+                    var fromJsonUsersTmp = fromJsonUsers.ToList();
+                    fromJsonUsersTmp.Add(h);
+
+                    fromJsonUsers = fromJsonUsersTmp.ToArray();
+                }
+
                 foreach (var dispositionUser in fromJsonUsers)
                 {
                     dispositionUser.HourId = hourId;
@@ -173,9 +200,12 @@ namespace Witnessing.Client
 
         public async Task<DispositionUser[]> GetDispositionForDayAsync(DateTime date)
         {
-            var weekDay = (int) date.DayOfWeek == 0 ? 7 : (int)date.DayOfWeek;
+            var weekDay = (int) date.DayOfWeek == 0 ? 7 : (int) date.DayOfWeek;
             var hours = await GetHoursAsync(weekDay);
+
             List<DispositionUser> _members = new List<DispositionUser>();
+
+
             foreach (var witnessingHour in hours)
             {
                 var dispositions = await GetDispositionAsync(date, witnessingHour.Id);
@@ -202,9 +232,9 @@ namespace Witnessing.Client
 
             List<DispositionUser> _members = new List<DispositionUser>();
 
-            for (int i = 2; i <= daysInMonth; i++)
+            for (int i = 1; i <= daysInMonth; i++)
             {
-                var dayOfWeek = ((int)lookupDate.DayOfWeek == 0 ? 7 : (int)lookupDate.DayOfWeek);
+                var dayOfWeek = ((int) lookupDate.DayOfWeek == 0 ? 7 : (int) lookupDate.DayOfWeek);
 
                 if (hoursForWeekAsync.TryGetValue(dayOfWeek, out WitnessingHour[] hours))
                 {
@@ -222,10 +252,6 @@ namespace Witnessing.Client
         }
 
 
-
         //https://wielkomiejskie.org/api/v1/witnessings/11/days/1/hours
-
-
-
     }
 }

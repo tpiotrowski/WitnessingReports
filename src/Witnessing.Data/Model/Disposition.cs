@@ -11,9 +11,14 @@ namespace Witnessing.Data.Model
 
     public class Disposition : BaseModel
     {
+        public override string ToString()
+        {
+            return $"{nameof(Hour)}: {Hour}, {nameof(Member)}: {Member}, {nameof(Date)}: {Date}";
+        }
+
         public Hour Hour { get; set; }
         public WitnessingMember Member { get; set; }
-        public DateTimeOffset Date { get; set; }
+        public DateTime Date { get; set; }
     }
     
     public class Hour : BaseModel
@@ -21,15 +26,32 @@ namespace Witnessing.Data.Model
         public DayOfWeek DayOfWeek { get; set; }
         public TimeSpan TimeOfDay { get; set; }
         public TimeSpan Duration { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(DayOfWeek)}: {DayOfWeek}, {nameof(TimeOfDay)}: {TimeOfDay}, {nameof(Duration)}: {Duration}";
+        }
     }
 
     public class Location : BaseModel
     {
+        public override string ToString()
+        {
+            return $"{nameof(Name)}: {Name}";
+        }
+
         public string Name { get; set; }
     }
 
+
+    
     public class WitnessingMember : BaseModel
     {
+        public override string ToString()
+        {
+            return $"{nameof(Name)}: {Name}, {nameof(LastName)}: {LastName}, {nameof(Phone)}: {Phone}, {nameof(Email)}: {Email}, {nameof(MinistryPrivilege)}: {MinistryPrivilege}";
+        }
+
         public string Name { get; set; }
         public string LastName { get; set; }
         public string Phone { get; set; }
@@ -39,7 +61,8 @@ namespace Witnessing.Data.Model
 
     public class Schedule : BaseModel
     {
-        public DateTimeOffset ScheduleDate { get; set; }
+
+        public DateTime ScheduleDate { get; set; }
         public WitnessingMember Member { get; set; }
         public Location Location { get; set; }
         public Hour Hour { get; set; }

@@ -146,7 +146,8 @@ namespace Tests
 
                 List<DispositionUser> _members = new List<DispositionUser>();
 
-                for (int i = 2; i <= daysInMonth; i++)
+                
+                for (int i = 1; i <= daysInMonth; i++)
                 {
                     var dayOfWeek = ((int) lookupDate.DayOfWeek == 0 ? 7 : (int) lookupDate.DayOfWeek);
 

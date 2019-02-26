@@ -129,14 +129,12 @@ namespace Witnessing.Data.Service
 
             foreach (var disposition in dispositons)
             {
-                var disp = new Disposition
-                {
-                    Hour = hours.SelectMany(h => h.Value).Single(h => h.Id == disposition.HourId),
-                    Date = disposition.Date,
-                    Member = members.Single(m =>
-                        m.Email == disposition.Email && m.Name == disposition.FirstName &&
-                        m.LastName == disposition.LastName)
-                };
+                var disp = new Disposition();
+                disp.Hour = hours.SelectMany(h => h.Value).Single(h => h.Id == disposition.HourId);
+                disp.Date = disposition.Date;
+                disp.Member = members.Single(m =>
+                    m.Email == disposition.Email && m.Name == disposition.FirstName &&
+                    m.LastName == disposition.LastName);
 
 
                 dispositionsRes.Add(disp);
@@ -183,7 +181,7 @@ namespace Witnessing.Data.Service
 
                 scheduleRes.Location = locations.Single(l => witnessingScheduleMember.LocationId == l.Id);
                 scheduleRes.Member = members.Single(m => witnessingScheduleMember.MemberKey == m.Id);
-                scheduleRes.ScheduleDate = witnessingScheduleMember.Date;
+                scheduleRes.ScheduleDate = witnessingScheduleMember.Date.DateTime;
                 scheduleRes.Hour = hours.SelectMany(h => h.Value).Single(h => h.Id == witnessingScheduleMember.HourId);
                 schedules.Add(scheduleRes);
             }
