@@ -155,16 +155,77 @@ namespace Witnessing.Client
                 var fromJson = Dispositions.FromJson(responseVal);
 
 
-                return fromJson.Users;
+                var fromJsonUsers = fromJson.Users;
+
+                foreach (var dispositionUser in fromJsonUsers)
+                {
+                    dispositionUser.HourId = hourId;
+                    dispositionUser.Date = date;
+                }
+
+
+                return fromJsonUsers;
             }
 
             return null;
         }
 
 
+        public async Task<DispositionUser[]> GetDispositionForDayAsync(DateTime date)
+        {
+            var weekDay = (int) date.DayOfWeek == 0 ? 7 : (int)date.DayOfWeek;
+            var hours = await GetHoursAsync(weekDay);
+            List<DispositionUser> _members = new List<DispositionUser>();
+            foreach (var witnessingHour in hours)
+            {
+                var dispositions = await GetDispositionAsync(date, witnessingHour.Id);
+                _members.AddRange(dispositions);
+            }
+
+            return _members.ToArray();
+        }
+
+
+        public async Task<DispositionUser[]> GetDispositionForMonthAsync(int year, int month)
+        {
+            if (month <= 0 || month > 12) throw new ArgumentOutOfRangeException(nameof(month));
+
+            if (year > DateTime.Now.Year) throw new ArgumentOutOfRangeException(nameof(year));
+
+
+            await AuthenticateAsync();
+
+            var hoursForWeekAsync = await GetHoursForWeekAsync();
+
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            var lookupDate = new DateTime(year, month, 1);
+
+            List<DispositionUser> _members = new List<DispositionUser>();
+
+            for (int i = 2; i <= daysInMonth; i++)
+            {
+                var dayOfWeek = ((int)lookupDate.DayOfWeek == 0 ? 7 : (int)lookupDate.DayOfWeek);
+
+                if (hoursForWeekAsync.TryGetValue(dayOfWeek, out WitnessingHour[] hours))
+                {
+                    foreach (var witnessingHour in hours)
+                    {
+                        var members = await GetDispositionAsync(lookupDate, witnessingHour.Id);
+                        _members.AddRange(members);
+                    }
+                }
+
+                lookupDate = lookupDate.AddDays(1);
+            }
+
+            return _members.ToArray();
+        }
+
+
+
         //https://wielkomiejskie.org/api/v1/witnessings/11/days/1/hours
 
 
-        
+
     }
 }

@@ -13,6 +13,7 @@ namespace Witnessing.Data.Model
     {
         public Hour Hour { get; set; }
         public WitnessingMember Member { get; set; }
+        public DateTimeOffset Date { get; set; }
     }
     
     public class Hour : BaseModel
@@ -38,9 +39,9 @@ namespace Witnessing.Data.Model
 
     public class Schedule : BaseModel
     {
-        public DateTime ScheduleDate { get; set; }
+        public DateTimeOffset ScheduleDate { get; set; }
         public WitnessingMember Member { get; set; }
         public Location Location { get; set; }
-
+        public Hour Hour { get; set; }
     }
 }

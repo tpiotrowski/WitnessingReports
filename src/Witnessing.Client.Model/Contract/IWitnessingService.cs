@@ -16,6 +16,8 @@ namespace Witnessing.Client.Model.Contract
         Task<WitnessingLocation[]> GetLocationsAsync(int page = 1, int resultCount = 100, string filter = "");
         Task<WitnessingScheduleMember[]> GetScheduleAsync(DateTime date);
         Task<DispositionUser[]> GetDispositionAsync(DateTime date, long hourId);
+        Task<DispositionUser[]> GetDispositionForMonthAsync(int year, int month);
+        Task<DispositionUser[]> GetDispositionForDayAsync(DateTime date);
         void Dispose();
     }
 

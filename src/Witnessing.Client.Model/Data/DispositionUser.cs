@@ -38,5 +38,12 @@ namespace Witnessing.Client.DataModel
 
         [JsonProperty("has_privileges", Required = Required.Always)]
         public bool HasPrivileges { get; set; }
+
+        [JsonIgnore]
+        public long HourId { get; set; }
+
+        [JsonIgnore]
+        public DateTime Date { get; set; }
+
     }
 }

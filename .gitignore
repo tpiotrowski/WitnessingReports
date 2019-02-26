@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /tests/Witnessing.Client.Tests/login.json
+/tests/Witnessing.IntegrationTests.Common/login.json

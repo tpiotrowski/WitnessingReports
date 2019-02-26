@@ -14,8 +14,8 @@ namespace Witnessing.Data.Contract
         Task<Hour[]> GetHoursAsync(int weekDayNumber);
         Task<SortedList<int, Hour[]>> GetHoursForWeekAsync();
         Task<Location[]> GetLocationsAsync(int page = 1, int resultCount = 100, string filter = "");
-        Task<WitnessingMember[]> GetScheduleAsync(DateTime date);
-        Task<Disposition[]> GetDispositionAsync(DateTime date, long hourId);
+        Task<Schedule[]> GetScheduleAsync(DateTime date);
+        Task<Disposition[]> GetDispositionForHourAsync(DateTime date, long hourId);
     
     }
     

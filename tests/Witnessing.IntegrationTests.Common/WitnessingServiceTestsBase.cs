@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
+using Tests;
 using Witnessing.Client;
 using Witnessing.Client.Model.Contract;
 
-namespace Tests
+namespace Witnessing.IntegrationTests.Common
 {
     public class WitnessingServiceTestsBase
     {
-        private ServiceConfiguration _conf;
-        private IAuthenticationService _authData;
+        protected ServiceConfiguration _conf;
+        protected IAuthenticationService _authData;
 
         [OneTimeSetUp]
         protected async Task SetupFixture()
@@ -24,7 +24,7 @@ namespace Tests
 
 
             AuthenticationService authentication = new AuthenticationService(serviceConfiguration);
-            
+
             _conf = serviceConfiguration;
             _authData = authentication;
         }
@@ -34,5 +34,7 @@ namespace Tests
         {
             await runTestAction(_authData, _conf);
         }
+
+        
     }
 }

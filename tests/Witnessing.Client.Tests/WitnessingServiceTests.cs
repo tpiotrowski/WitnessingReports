@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Witnessing.Client;
 using Witnessing.Client.DataModel;
+using Witnessing.IntegrationTests.Common;
 
 namespace Tests
 {
